@@ -69,11 +69,11 @@ export default {
 
 <style scoped>
 body {
-  margin: 0;                 /* 変更なし */
+  margin: 0; /* 変更なし */
   font-family: Arial, sans-serif; /* 変更なし */
-  display: flex;             /* 変更なし */
-  flex-direction: column;    /* 変更なし */
-  height: 100vh;             /* 変更なし */
+  display: flex; /* 変更なし */
+  flex-direction: column; /* 変更なし */
+  height: 100vh; /* 変更なし */
 }
 
 header {
@@ -84,6 +84,11 @@ header {
   background-color: #0055d4;
   color: #fffdfd;
   position: relative;
+}
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 .menu {
   cursor: pointer;
@@ -115,12 +120,13 @@ header {
   color: white;
 }
 main {
-  flex: 1;                /* 変更なし */
-  display: flex;          /* 変更なし */
+  flex: 1; /* 変更なし */
+  display: flex; /* 変更なし */
   flex-direction: column; /* 変更なし */
-  overflow-y: auto;       /* 変更なし */
-  padding: 10px;          /* 変更なし */
+  overflow-y: auto; /* 変更なし */
+  padding: 10px; /* 変更なし */
   background-color: #ffffff; /* 変更なし */
+  flex-grow: 1;
 }
 
 .chat-container {
@@ -142,8 +148,6 @@ main {
   align-self: flex-end;
 }
 footer {
-  position: sticky; /* 追加 */
-  bottom: 0;        /* 追加 */
   display: flex;
   padding: 10px;
   background-color: white;
