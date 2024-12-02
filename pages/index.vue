@@ -69,12 +69,13 @@ export default {
 
 <style scoped>
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+  margin: 0;                 /* 変更なし */
+  font-family: Arial, sans-serif; /* 変更なし */
+  display: flex;             /* 変更なし */
+  flex-direction: column;    /* 変更なし */
+  height: 100vh;             /* 変更なし */
 }
+
 header {
   display: flex;
   justify-content: space-between;
@@ -114,14 +115,14 @@ header {
   color: white;
 }
 main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  background-color: #ffffff;
-  padding: 10px;
-  overflow-y: auto;
+  flex: 1;                /* 変更なし */
+  display: flex;          /* 変更なし */
+  flex-direction: column; /* 変更なし */
+  overflow-y: auto;       /* 変更なし */
+  padding: 10px;          /* 変更なし */
+  background-color: #ffffff; /* 変更なし */
 }
+
 .chat-container {
   display: flex;
   flex-direction: column;
@@ -141,10 +142,14 @@ main {
   align-self: flex-end;
 }
 footer {
+  position: sticky; /* 追加 */
+  bottom: 0;        /* 追加 */
   display: flex;
   padding: 10px;
   background-color: white;
+  border-top: 1px solid #ccc; /* 追加 */
 }
+
 input[type="text"] {
   flex: 1;
   padding: 10px;
