@@ -1,4 +1,36 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { onMounted, ref } from "vue";
+
+const isMenuVisible = ref(false);
+const newMessage = ref("");
+const messages = ref([{ text: "こんにちは!", type: "bot" }]);
+let socket = null;
+
+const toggleMenu = () => {
+  isMenuVisible.value = !isMenuVisible.value;
+};
+
+const closeMenu = (event: MouseEvent) => {
+  if ((event.target as HTMLElement).tagName === "LI") {
+    isMenuVisible.value = false;
+  }
+};
+
+const sendMessage = () => {
+  const trimmedMessage = newMessage.value.trim();
+  if (trimmedMessage) {
+    messages.value.push({ text: trimmedMessage, type: "user" });
+    newMessage.value = "";
+  }
+};
+
+onMounted(() => {
+  socket = new WebSocket("ws://localhost:8080/ws");
+  socket.onmessage = (event) => {
+    messages.value.push({ text: event.data, type: "bot" });
+  };
+});
+</script>
 <template>
   <div id="app">
     <header>
@@ -33,39 +65,6 @@
     </footer>
   </div>
 </template>
-
-<script lang="ts">
-export default {
-  data() {
-    return {
-      isMenuVisible: false,
-      newMessage: "",
-      messages: [{ text: "こんにちは!", type: "bot" }],
-    };
-  },
-  methods: {
-    toggleMenu() {
-      this.isMenuVisible = !this.isMenuVisible;
-    },
-    closeMenu(event: MouseEvent) {
-      if ((event.target as HTMLElement).tagName === "LI") {
-        this.isMenuVisible = false;
-      }
-    },
-    sendMessage() {
-      const trimmedMessage = this.newMessage.trim();
-      if (trimmedMessage) {
-        this.messages.push({ text: trimmedMessage, type: "user" });
-        this.newMessage = "";
-        this.$nextTick(() => {
-          const chatContainer = this.$refs.chatContainer as HTMLDivElement;
-          chatContainer.scrollTop = chatContainer.scrollHeight;
-        });
-      }
-    },
-  },
-};
-</script>
 
 <style scoped>
 body {
