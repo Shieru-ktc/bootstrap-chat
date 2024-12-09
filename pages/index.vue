@@ -4,7 +4,7 @@ import { onMounted, ref } from "vue";
 const isMenuVisible = ref(false);
 const newMessage = ref("");
 const messages = ref([{ text: "こんにちは!", type: "bot" }]);
-let socket = null;
+let socket: WebSocket | null = null;
 
 const toggleMenu = () => {
   isMenuVisible.value = !isMenuVisible.value;
@@ -21,6 +21,7 @@ const sendMessage = () => {
   if (trimmedMessage) {
     messages.value.push({ text: trimmedMessage, type: "user" });
     newMessage.value = "";
+    socket?.send(trimmedMessage);
   }
 };
 
