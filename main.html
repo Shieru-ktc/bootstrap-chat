@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Client</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
+    #messages {
+      border: 1px solid #ccc;
+      padding: 10px;
+      height: 200px;
+      overflow-y: auto;
+      background: #f9f9f9;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>WebSocket Client</h1>
+  <div>
+    <label for="serverUrl">Server URL:</label>
+    <input type="text" id="serverUrl" value="ws://localhost:8080" />
+    <button id="connectBtn">Connect</button>
+    <button id="disconnectBtn" disabled>Disconnect</button>
+  </div>
+  <div>
+    <textarea id="messageInput" placeholder="Enter your message"></textarea>
+    <button id="sendBtn" disabled>Send</button>
+  </div>
+  <div id="messages"></div>
+
+  <script>
+    let socket;
+
+    const serverUrlInput = document.getElementById('serverUrl');
+    const connectBtn = document.getElementById('connectBtn');
+    const disconnectBtn = document.getElementById('disconnectBtn');
+    const sendBtn = document.getElementById('sendBtn');
+    const messageInput = document.getElementById('messageInput');
+    const messagesDiv = document.getElementById('messages');
+
+    connectBtn.addEventListener('click', () => {
+      const serverUrl = serverUrlInput.value;
+
+      // Create a WebSocket connection
+      socket = new WebSocket(serverUrl);
+
+      socket.addEventListener('open', () => {
+        logMessage('Connected to server');
+        connectBtn.disabled = true;
+        disconnectBtn.disabled = false;
+        sendBtn.disabled = false;
+      });
+
+      socket.addEventListener('message', (event) => {
+        logMessage(`Received: ${event.data}`);
+      });
+
+      socket.addEventListener('close', () => {
+        logMessage('Disconnected from server');
+        connectBtn.disabled = false;
+        disconnectBtn.disabled = true;
+        sendBtn.disabled = true;
+      });
+
+      socket.addEventListener('error', (error) => {
+        logMessage(`Error: ${error.message}`);
+      });
+    });
+
+    disconnectBtn.addEventListener('click', () => {
+      if (socket) {
+        socket.close();
+      }
+    });
+
+    sendBtn.addEventListener('click', () => {
+      const message = messageInput.value;
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(message);
+        logMessage(`Sent: ${message}`);
+        messageInput.value = '';
+      } else {
+        logMessage('Unable to send message, socket is not open.');
+      }
+    });
+
+    function logMessage(message) {
+      const messageElement = document.createElement('div');
+      messageElement.textContent = message;
+      messagesDiv.appendChild(messageElement);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to the bottom
+    }
+  </script>
+</body>
+
+</html>
