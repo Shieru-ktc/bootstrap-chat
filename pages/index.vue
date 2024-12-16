@@ -51,13 +51,6 @@ const sendMessage = () => {
   if (trimmedMessage) {
     messages.value.push({ text: trimmedMessage, type: "user" });
     newMessage.value = ""; // 入力欄をクリア
-
-    // 自動スクロール
-    nextTick(() => {
-      if (chatContainer.value) {
-        chatContainer.value.scrollTop = chatContainer.value.scrollHeight;
-      }
-    });
   }
 };
 </script>
