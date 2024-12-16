@@ -42,14 +42,40 @@
 <script setup lang="ts">
 // Reactive properties
 const newMessage = ref("");
-const messages = ref([{ text: "こんにちは！そしてさようなら。", type: "bot" }]);
-const chatContainer = ref<HTMLDivElement | null>(null);
+const messages = ref<
+  {
+    text: string;
+    type: "user" | "other";
+  }[]
+>([]);
+const clientId = ref("");
+const { data, send } = useWebSocket("ws://localhost:8080/ws");
+
+// メッセージ受信機能
+watch(data, (newData) => {
+  const data = JSON.parse(newData);
+  if (data) {
+    if (data["type"] == "CONNECT") {
+      clientId.value = data["id"];
+      messages.value.push({
+        text: "接続が完了し、あなたのIDが割り振られました！",
+        type: "other",
+      });
+    }
+    if (data["type"] == "MESSAGE") {
+      messages.value.push({
+        text: data["content"],
+        type: clientId.value === data["sender"] ? "user" : "other",
+      });
+    }
+  }
+});
 
 // メッセージ送信機能
 const sendMessage = () => {
   const trimmedMessage = newMessage.value.trim();
   if (trimmedMessage) {
-    messages.value.push({ text: trimmedMessage, type: "user" });
+    send(JSON.stringify({ type: "MESSAGE", content: trimmedMessage }));
     newMessage.value = ""; // 入力欄をクリア
   }
 };
@@ -61,7 +87,7 @@ const sendMessage = () => {
   color: black;
   align-self: flex-end;
 }
-.chat-bubble.bot {
+.chat-bubble.other {
   background-color: #007bff;
   color: white;
   align-self: flex-start;
