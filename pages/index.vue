@@ -1,4 +1,3 @@
-<script setup lang="ts"></script>
 <template>
   <div id="app">
     <header>
@@ -13,11 +12,7 @@
     </header>
     <main>
       <div class="chat-container" ref="chatContainer">
-        <div
-          v-for="(message, index) in messages"
-          :key="index"
-          :class="['chat-bubble', message.type]"
-        >
+        <div v-for="(message, index) in messages" :key="index" :class="['chat-bubble', message.type]">
           {{ message.text }}
         </div>
       </div>
@@ -34,48 +29,73 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
+import { ref, onMounted, nextTick } from 'vue';
+
 export default {
-  data() {
-    return {
-      isMenuVisible: false,
-      newMessage: "",
-      messages: [{ text: "こんにちは!", type: "bot" }],
+  setup() {
+    // Reactive properties
+    const isMenuVisible = ref(false);
+    const newMessage = ref('');
+    const messages = ref([
+      { text: 'こんにちは！そしてさようなら。', type: 'bot' }
+    ]);
+    const chatContainer = ref(null);
+
+    // メニュー表示・非表示のトグル
+    const toggleMenu = () => {
+      isMenuVisible.value = !isMenuVisible.value;
     };
-  },
-  methods: {
-    toggleMenu() {
-      this.isMenuVisible = !this.isMenuVisible;
-    },
-    closeMenu(event: MouseEvent) {
-      if ((event.target as HTMLElement).tagName === "LI") {
-        this.isMenuVisible = false;
+
+    // メニューをクリックしたとき自動で閉じる
+    const closeMenu = (event) => {
+      if (event.target.tagName === 'LI') {
+        isMenuVisible.value = false;
       }
-    },
-    sendMessage() {
-      const trimmedMessage = this.newMessage.trim();
+    };
+
+    // メッセージ送信機能
+    const sendMessage = () => {
+      const trimmedMessage = newMessage.value.trim();
       if (trimmedMessage) {
-        this.messages.push({ text: trimmedMessage, type: "user" });
-        this.newMessage = "";
-        this.$nextTick(() => {
-          const chatContainer = this.$refs.chatContainer as HTMLDivElement;
-          chatContainer.scrollTop = chatContainer.scrollHeight;
+        messages.value.push({ text: trimmedMessage, type: 'user' });
+        newMessage.value = ''; // 入力欄をクリア
+
+        // 自動スクロール
+        nextTick(() => {
+          if (chatContainer.value) {
+            chatContainer.value.scrollTop = chatContainer.value.scrollHeight;
+          }
         });
       }
-    },
-  },
+    };
+
+    // 初期設定
+    onMounted(() => {
+      // 初期表示時の処理があればここに記述
+    });
+
+    return {
+      isMenuVisible,
+      newMessage,
+      messages,
+      chatContainer,
+      toggleMenu,
+      closeMenu,
+      sendMessage
+    };
+  }
 };
 </script>
 
 <style scoped>
 body {
-  margin: 0; /* 変更なし */
-  font-family: Arial, sans-serif; /* 変更なし */
-  display: flex; /* 変更なし */
-  flex-direction: column; /* 変更なし */
-  height: 100vh; /* 変更なし */
+  margin: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
-
 header {
   display: flex;
   justify-content: space-between;
@@ -84,11 +104,6 @@ header {
   background-color: #0055d4;
   color: #fffdfd;
   position: relative;
-}
-#app {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
 }
 .menu {
   cursor: pointer;
@@ -120,15 +135,14 @@ header {
   color: white;
 }
 main {
-  flex: 1; /* 変更なし */
-  display: flex; /* 変更なし */
-  flex-direction: column; /* 変更なし */
-  overflow-y: auto; /* 変更なし */
-  padding: 10px; /* 変更なし */
-  background-color: #ffffff; /* 変更なし */
-  flex-grow: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background-color: #ffffff;
+  padding: 10px;
+  overflow-y: auto;
 }
-
 .chat-container {
   display: flex;
   flex-direction: column;
@@ -151,9 +165,11 @@ footer {
   display: flex;
   padding: 10px;
   background-color: white;
-  border-top: 1px solid #ccc; /* 追加 */
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 10;
 }
-
 input[type="text"] {
   flex: 1;
   padding: 10px;
