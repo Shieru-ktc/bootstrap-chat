@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@vueuse/core": "^12.0.0",
     "sass": "1.77.6",
     "usebootstrap": "^3.5.100",
     "vue": "latest"
