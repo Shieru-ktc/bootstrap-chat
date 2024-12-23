@@ -1,11 +1,11 @@
 <template>
-  <div id="app" style="height: 100vh; display: flex; flex-direction: column">
+  <b-div id="app" flex flex-direction="column" viewport-height>
     <Navbar expand="lg" background-color="primary" theme="dark">
       <Container type="fluid">
         <NavbarBrand>Nuxt チャットツール</NavbarBrand>
       </Container>
     </Navbar>
-    <b-div margin="x-2" flex flex-direction="column" style="flex-grow: 1">
+    <b-div margin="x-2" flex flex-direction="column" flex-grow="1">
       <b-div
         ref="chatContainer"
         flex
@@ -36,7 +36,7 @@
         <b-button @click="sendMessage" color="white">✈️</b-button>
       </b-div>
     </b-div>
-  </div>
+  </b-div>
 </template>
 
 <script setup lang="ts">
