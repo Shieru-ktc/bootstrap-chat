@@ -1,67 +1,52 @@
 <template>
-  <b-div id="app" flex flex-direction="column" viewport-height>
+  <div id="app" class="d-flex flex-column vh-100">
     <Navbar expand="lg" background-color="primary" theme="dark">
       <Container type="fluid">
         <NavbarBrand>Nuxt チャットツール</NavbarBrand>
       </Container>
     </Navbar>
-    <b-div margin="x-2" flex flex-direction="column" flex-grow="1">
-      <b-div
-        ref="chatContainer"
-        flex
-        gap="10"
-        flex-direction="column"
-        flex-grow="1"
-        style="overflow-y: auto"
-      >
-        <b-div
+    <div class="d-flex flex-column flex-grow-1 overflow-auto p-3">
+      <div ref="chatContainer" class="d-flex flex-column gap-3">
+        <div
           v-for="(message, index) in messages"
           :key="index"
-          :class="['chat-bubble', message.type]"
-          rounded
-          margin="y-2"
-          padding="2"
-          text-background="dark-subtle"
+          :class="['chat-bubble', message.type === 'user' ? 'align-self-end bg-success text-white' : 'align-self-start bg-light text-dark']"
         >
           {{ message.text }}
-        </b-div>
-      </b-div>
-      <b-div flex gap="2" relative-width="100" margin="2">
+        </div>
+      </div>
+      <div class="d-flex gap-2 mt-3">
         <BFormInput
-          flex
+          class="flex-grow-1"
           type="text"
           v-model="newMessage"
           placeholder="メッセージを入力..."
           @keydown.enter="sendMessage"
         />
         <b-button @click="sendMessage" color="white">✈️</b-button>
-      </b-div>
-    </b-div>
-  </b-div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-// Reactive properties
 const newMessage = ref("");
-const messages = ref<
+const messages = ref<{
+  text: string;
+  type: "user" | "other";
+}[]>([
   {
-    text: string;
-    type: "user" | "other";
-  }[]
->([
- {
-  "text": "aaa",
-  type: "other"
- },
- {
-  text: "bbb",
-  type:"user"
- }
+    text: "aaa",
+    type: "other",
+  },
+  {
+    text: "bbb",
+    type: "user",
+  },
 ]);
 const clientId = ref("");
 const { data, send } = useWebSocket("ws://localhost:8080/ws");
 
-// メッセージ受信機能
 watch(data, (newData) => {
   const data = JSON.parse(newData);
   if (data) {
@@ -81,14 +66,11 @@ watch(data, (newData) => {
   }
 });
 
-// メッセージ送信機能
 const sendMessage = () => {
   const trimmedMessage = newMessage.value.trim();
   if (trimmedMessage) {
     send(JSON.stringify({ type: "MESSAGE", content: trimmedMessage }));
-    newMessage.value = ""; // 入力欄をクリア
+    newMessage.value = "";
   }
 };
 </script>
-
-
