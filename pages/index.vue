@@ -21,6 +21,7 @@
           rounded
           margin="y-2"
           padding="2"
+          text-background="dark-subtle"
         >
           {{ message.text }}
         </b-div>
@@ -47,7 +48,16 @@ const messages = ref<
     text: string;
     type: "user" | "other";
   }[]
->([]);
+>([
+ {
+  "text": "aaa",
+  type: "other"
+ },
+ {
+  text: "bbb",
+  type:"user"
+ }
+]);
 const clientId = ref("");
 const { data, send } = useWebSocket("ws://localhost:8080/ws");
 
@@ -81,15 +91,4 @@ const sendMessage = () => {
 };
 </script>
 
-<style scoped>
-.chat-bubble.user {
-  background-color: #ccc;
-  color: black;
-  align-self: flex-end;
-}
-.chat-bubble.other {
-  background-color: #007bff;
-  color: white;
-  align-self: flex-start;
-}
-</style>
+
