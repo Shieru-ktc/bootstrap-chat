@@ -2,12 +2,15 @@
   <div id="app" class="d-flex flex-column vh-100">
     <Navbar />
 
-    <div class="d-flex flex-column flex-grow-1 overflow-auto p-3" style="max-height: calc(100vh - 80px)">
+    <div
+      class="d-flex flex-column flex-grow-1 overflow-auto p-3"
+      style="max-height: calc(100vh - 80px)"
+    >
       <div ref="chatContainer" class="d-flex flex-column gap-3">
         <Message
           v-for="(message, index) in messages"
           :key="index"
-          :message="message"  <!-- messageオブジェクトを渡す -->
+          :message="message"
         />
       </div>
     </div>
@@ -19,11 +22,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
-import Message from "@/components/Message.vue";
 import InputBox from "@/components/InputBox.vue";
+import Message from "@/components/Message.vue";
 import Navbar from "@/components/Navbar.vue";
 import { useWebSocket } from "@vueuse/core";
+import { ref, watch } from "vue";
 
 const newMessage = ref("");
 const messages = ref<
@@ -58,7 +61,7 @@ const sendMessage = (message: string) => {
   const trimmedMessage = message.trim();
   if (trimmedMessage) {
     send(JSON.stringify({ type: "MESSAGE", content: trimmedMessage }));
-    newMessage.value = ""; 
+    newMessage.value = "";
   }
 };
 </script>

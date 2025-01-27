@@ -6,13 +6,12 @@
   </BNavbar>
 </template>
 
-<script setup lang="ts">
-import { BNavbar, BContainer, BNavbarBrand } from "bootstrap-vue-3";
-</script>
+<script setup lang="ts"></script>
 
 <style scoped>
 .b-navbar {
   background-color: #007bff !important;
+}
 
 .b-navbar-brand {
   color: white;
