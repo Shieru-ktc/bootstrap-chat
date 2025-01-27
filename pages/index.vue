@@ -5,23 +5,28 @@
         <NavbarBrand>Nuxt チャットツール</NavbarBrand>
       </Container>
     </Navbar>
-    
+
     <!-- メッセージ表示エリア -->
-    <div class="d-flex flex-column flex-grow-1 overflow-auto p-3" style="max-height: calc(100vh - 80px);">
+    <div
+      class="d-flex flex-column flex-grow-1 overflow-auto p-3"
+      style="max-height: calc(100vh - 80px)"
+    >
       <div ref="chatContainer" class="d-flex flex-column gap-3">
         <div
           v-for="(message, index) in messages"
           :key="index"
           :class="[
             'chat-bubble',
-            message.type === 'user' ? 'align-self-end bg-success text-white rounded p-2' : 'align-self-start bg-light text-dark rounded p-2'
+            message.type === 'user'
+              ? 'align-self-end bg-success text-white rounded p-2'
+              : 'align-self-start bg-light text-dark rounded p-2',
           ]"
         >
           {{ message.text }}
         </div>
       </div>
     </div>
-    
+
     <!-- メッセージ入力欄 -->
     <div class="d-flex p-3">
       <BFormInput
@@ -38,19 +43,12 @@
 
 <script setup lang="ts">
 const newMessage = ref("");
-const messages = ref<{
-  text: string;
-  type: "user" | "other";
-}[]>([
+const messages = ref<
   {
-    text: "aaa",
-    type: "other",
-  },
-  {
-    text: "bbb",
-    type: "user",
-  },
-]);
+    text: string;
+    type: "user" | "other";
+  }[]
+>([]);
 const clientId = ref("");
 const { data, send } = useWebSocket("ws://localhost:8080/ws");
 
