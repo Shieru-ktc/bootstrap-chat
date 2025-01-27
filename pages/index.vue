@@ -10,7 +10,8 @@
         <Message
           v-for="(message, index) in messages"
           :key="index"
-          :message="message"
+          :message="message.text"
+          :type="message.type"
         />
       </div>
     </div>
@@ -22,11 +23,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
-import Message from "@/components/Message.vue";
 import InputBox from "@/components/InputBox.vue";
+import Message from "@/components/Message.vue";
 import Navbar from "@/components/Navbar.vue";
 import { useWebSocket } from "@vueuse/core";
+import { ref, watch } from "vue";
 
 const newMessage = ref("");
 const messages = ref<
@@ -61,7 +62,7 @@ const sendMessage = (message: string) => {
   const trimmedMessage = message.trim();
   if (trimmedMessage) {
     send(JSON.stringify({ type: "MESSAGE", content: trimmedMessage }));
-    newMessage.value = ""; 
+    newMessage.value = "";
   }
 };
 </script>
