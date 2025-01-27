@@ -5,26 +5,33 @@
         <NavbarBrand>Nuxt チャットツール</NavbarBrand>
       </Container>
     </Navbar>
-    <div class="d-flex flex-column flex-grow-1 overflow-auto p-3">
+    
+    <!-- メッセージ表示エリア -->
+    <div class="d-flex flex-column flex-grow-1 overflow-auto p-3" style="max-height: calc(100vh - 80px);">
       <div ref="chatContainer" class="d-flex flex-column gap-3">
         <div
           v-for="(message, index) in messages"
           :key="index"
-          :class="['chat-bubble', message.type === 'user' ? 'align-self-end bg-success text-white' : 'align-self-start bg-light text-dark']"
+          :class="[
+            'chat-bubble',
+            message.type === 'user' ? 'align-self-end bg-success text-white rounded p-2' : 'align-self-start bg-light text-dark rounded p-2'
+          ]"
         >
           {{ message.text }}
         </div>
       </div>
-      <div class="d-flex gap-2 mt-3">
-        <BFormInput
-          class="flex-grow-1"
-          type="text"
-          v-model="newMessage"
-          placeholder="メッセージを入力..."
-          @keydown.enter="sendMessage"
-        />
-        <b-button @click="sendMessage" color="white">✈️</b-button>
-      </div>
+    </div>
+    
+    <!-- メッセージ入力欄 -->
+    <div class="d-flex p-3">
+      <BFormInput
+        class="flex-grow-1"
+        type="text"
+        v-model="newMessage"
+        placeholder="メッセージを入力..."
+        @keydown.enter="sendMessage"
+      />
+      <b-button @click="sendMessage" color="white">✈️</b-button>
     </div>
   </div>
 </template>
