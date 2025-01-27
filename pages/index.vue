@@ -1,35 +1,33 @@
 <template>
-  <b-div id="app" flex flex-direction="column" viewport-height>
-    <Navbar expand="lg" background-color="primary" theme="dark">
-      <Container type="fluid">
-        <NavbarBrand>Nuxt チャットツール</NavbarBrand>
-      </Container>
-    </Navbar>
-    <b-div margin="x-2" flex flex-direction="column" flex-grow="1">
-      <MessageBox>
+  <div id="app" class="d-flex flex-column vh-100">
+    <Navbar />
+
+    <div
+      class="d-flex flex-column flex-grow-1 overflow-auto p-3"
+      style="max-height: calc(100vh - 80px)"
+    >
+      <div ref="chatContainer" class="d-flex flex-column gap-3">
         <Message
           v-for="(message, index) in messages"
           :key="index"
-          :text="message.text"
-          :type="message.type"
+          :message="message"
         />
-      </MessageBox>
+      </div>
+    </div>
 
-      <b-div flex gap="2" relative-width="100" margin="2">
-        <InputBox @sendMessage="sendMessage" v-model="newMessage" />
-      </b-div>
-    </b-div>
-  </b-div>
+    <div class="d-flex p-3">
+      <InputBox @sendMessage="sendMessage" v-model="newMessage" />
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import MessageBox from "@/components/MessageBox.vue";
 import Message from "@/components/Message.vue";
 import InputBox from "@/components/InputBox.vue";
+import Navbar from "@/components/Navbar.vue";
 import { useWebSocket } from "@vueuse/core";
 
-// Reactive properties
 const newMessage = ref("");
 const messages = ref<
   {
@@ -59,11 +57,11 @@ watch(data, (newData) => {
   }
 });
 
-const sendMessage = () => {
-  const trimmedMessage = newMessage.value.trim();
+const sendMessage = (message: string) => {
+  const trimmedMessage = message.trim();
   if (trimmedMessage) {
     send(JSON.stringify({ type: "MESSAGE", content: trimmedMessage }));
-    newMessage.value = ""; // 入力欄をクリア
+    newMessage.value = ""; 
   }
 };
 </script>
@@ -74,6 +72,7 @@ const sendMessage = () => {
   color: black;
   align-self: flex-end;
 }
+
 .chat-bubble.other {
   background-color: #007bff;
   color: white;
