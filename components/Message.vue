@@ -1,81 +1,58 @@
 <template>
-  <div id="app" class="d-flex flex-column vh-100">
-    <Navbar />
-
-    <div
-      class="d-flex flex-column flex-grow-1 overflow-auto p-3"
-      style="max-height: calc(100vh - 80px)"
-    >
-      <div ref="chatContainer" class="d-flex flex-column gap-3">
-        <Message
-          v-for="(message, index) in messages"
-          :key="index"
-          :message="message"
-        />
-      </div>
-    </div>
-
-    <div class="d-flex p-3">
-      <InputBox @sendMessage="sendMessage" v-model="newMessage" />
-    </div>
+  <div :class="messageClass">
+    <p>{{ message }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-import InputBox from "@/components/InputBox.vue";
-import Message from "@/components/Message.vue";
-import Navbar from "@/components/Navbar.vue";
-import { useWebSocket } from "@vueuse/core";
-import { ref, watch } from "vue";
+import { defineProps, computed } from "vue";
 
-const newMessage = ref("");
-const messages = ref<
-  {
-    text: string;
-    type: "user" | "other";
-  }[]
->([]);
-const clientId = ref("");
-const { data, send } = useWebSocket("ws://localhost:8080/ws");
-
-watch(data, (newData) => {
-  const data = JSON.parse(newData);
-  if (data) {
-    if (data["type"] == "CONNECT") {
-      clientId.value = data["id"];
-      messages.value.push({
-        text: "接続が完了し、あなたのIDが割り振られました！",
-        type: "other",
-      });
-    }
-    if (data["type"] == "MESSAGE") {
-      messages.value.push({
-        text: data["content"],
-        type: clientId.value === data["sender"] ? "user" : "other",
-      });
-    }
-  }
+const props = defineProps({
+  message: {
+    type: String, 
+    required: true,
+  },
+  type: {
+    type: String,
+    required: true,
+    default: "user", 
+  },
 });
 
-const sendMessage = (message: string) => {
-  const trimmedMessage = message.trim();
-  if (trimmedMessage) {
-    send(JSON.stringify({ type: "MESSAGE", content: trimmedMessage }));
-    newMessage.value = "";
-  }
-};
+const messageClass = computed(() => {
+  return props.type === "user"
+    ? "bg-success text-white align-self-end"
+    : "bg-light text-dark align-self-start";
+});
 </script>
 
 <style scoped>
-.chat-bubble.user {
-  background-color: #ccc;
-  color: black;
-  align-self: flex-end;
+.message {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 10px;
 }
 
-.chat-bubble.other {
-  background-color: #007bff;
+.bg-success {
+  background-color: #28a745; 
+}
+
+.bg-light {
+  background-color: #f8f9fa; 
+
+.text-white {
   color: white;
-  align-self: flex-start;
+}
+
+.text-dark {
+  color: black;
+}
+
+.align-self-end {
+  align-self: flex-end; 
+}
+
+.align-self-start {
+  align-self: flex-start; 
 }
 </style>
