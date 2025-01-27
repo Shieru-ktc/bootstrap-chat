@@ -6,40 +6,29 @@
       </Container>
     </Navbar>
     <b-div margin="x-2" flex flex-direction="column" flex-grow="1">
-      <b-div
-        ref="chatContainer"
-        flex
-        gap="10"
-        flex-direction="column"
-        flex-grow="1"
-        style="overflow-y: auto"
-      >
-        <b-div
+      <MessageBox>
+        <Message
           v-for="(message, index) in messages"
           :key="index"
-          :class="['chat-bubble', message.type]"
-          rounded
-          margin="y-2"
-          padding="2"
-        >
-          {{ message.text }}
-        </b-div>
-      </b-div>
-      <b-div flex gap="2" relative-width="100" margin="2">
-        <BFormInput
-          flex
-          type="text"
-          v-model="newMessage"
-          placeholder="メッセージを入力..."
-          @keydown.enter="sendMessage"
+          :text="message.text"
+          :type="message.type"
         />
-        <b-button @click="sendMessage" color="white">✈️</b-button>
+      </MessageBox>
+
+      <b-div flex gap="2" relative-width="100" margin="2">
+        <InputBox @sendMessage="sendMessage" v-model="newMessage" />
       </b-div>
     </b-div>
   </b-div>
 </template>
 
 <script setup lang="ts">
+import { ref, watch } from "vue";
+import MessageBox from "@/components/MessageBox.vue";
+import Message from "@/components/Message.vue";
+import InputBox from "@/components/InputBox.vue";
+import { useWebSocket } from "@vueuse/core";
+
 // Reactive properties
 const newMessage = ref("");
 const messages = ref<
@@ -51,7 +40,6 @@ const messages = ref<
 const clientId = ref("");
 const { data, send } = useWebSocket("ws://localhost:8080/ws");
 
-// メッセージ受信機能
 watch(data, (newData) => {
   const data = JSON.parse(newData);
   if (data) {
@@ -71,7 +59,6 @@ watch(data, (newData) => {
   }
 });
 
-// メッセージ送信機能
 const sendMessage = () => {
   const trimmedMessage = newMessage.value.trim();
   if (trimmedMessage) {
