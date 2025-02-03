@@ -1,7 +1,7 @@
 <template>
-  <div class="input-box">
+  <div class="d-flex p-3">
     <BFormInput
-      class="flex-grow-1"
+      class="flex-grow"
       type="text"
       v-model="inputMessage"
       placeholder="メッセージを入力..."
@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from "vue";
+import { defineEmits, defineProps, ref } from "vue";
 
 const props = defineProps({
   modelValue: {
@@ -28,14 +28,8 @@ const inputMessage = ref(props.modelValue);
 const handleSendMessage = () => {
   if (inputMessage.value.trim()) {
     emit("sendMessage", inputMessage.value.trim());
-    emit("update:modelValue", ""); 
+    emit("update:modelValue", "");
+    inputMessage.value = "";
   }
 };
 </script>
-
-<style scoped>
-.input-box {
-  display: flex;
-  gap: 10px;
-}
-</style>
