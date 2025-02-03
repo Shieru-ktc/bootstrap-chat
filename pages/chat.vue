@@ -24,7 +24,7 @@ const messages = ref<
   }[]
 >([]);
 const clientId = ref("");
-const { data, send } = useWebSocket("ws://localhost:8080/ws");
+const { data, send } = useWebSocket("wss://chat-backend.shieru-lab.com/ws");
 
 watch(data, (newData) => {
   const data = JSON.parse(newData);

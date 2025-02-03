@@ -9,7 +9,7 @@
     </p>
 
     <!-- アプリへのリンクボタン -->
-    <a class="btn btn-primary btn-lg mt-3" v-bind:href="url">{{ name }}</a>
+    <a class="btn btn-primary btn-lg mt-3" href="/chat">チャットを始める</a>
 
     <h2>愉快な開発者たち</h2>
     <img src="/yukai.jpg" class="img-fluid w-25 h-25" />
@@ -20,13 +20,3 @@
     <p>© 2025 Nuxt チャットツール</p>
   </footer>
 </template>
-
-<script setup lang="ts">
-import { ref } from "vue";
-
-// リンク先URLを設定（例: チャットアプリページ）
-const url = ref("/");
-
-// ボタンのテキストを設定
-const name = ref("チャットツールを開始する");
-</script>
