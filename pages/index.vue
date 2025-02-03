@@ -1,48 +1,26 @@
 <template>
   <div id="app" class="d-flex flex-column vh-100">
-    <Navbar expand="lg" background-color="primary" theme="dark">
-      <Container type="fluid">
-        <NavbarBrand>Nuxt チャットツール</NavbarBrand>
-      </Container>
-    </Navbar>
+    <Navbar />
 
-    <!-- メッセージ表示エリア -->
     <div
       class="d-flex flex-column flex-grow-1 overflow-auto p-3"
       style="max-height: calc(100vh - 80px)"
     >
       <div ref="chatContainer" class="d-flex flex-column gap-3">
-        <div
+        <Message
           v-for="(message, index) in messages"
           :key="index"
-          :class="[
-            'chat-bubble',
-            message.type === 'user'
-              ? 'align-self-end bg-success text-white rounded p-2'
-              : 'align-self-start bg-light text-dark rounded p-2',
-          ]"
-        >
-          {{ message.text }}
-        </div>
+          :message="message.text"
+          :type="message.type"
+        />
       </div>
     </div>
 
-    <!-- メッセージ入力欄 -->
-    <div class="d-flex p-3">
-      <BFormInput
-        class="flex-grow-1"
-        type="text"
-        v-model="newMessage"
-        placeholder="メッセージを入力..."
-        @keydown.enter="sendMessage"
-      />
-      <b-button @click="sendMessage" color="white">✈️</b-button>
-    </div>
+    <InputBox @sendMessage="sendMessage" />
   </div>
 </template>
 
 <script setup lang="ts">
-const newMessage = ref("");
 const messages = ref<
   {
     text: string;
@@ -71,11 +49,10 @@ watch(data, (newData) => {
   }
 });
 
-const sendMessage = () => {
-  const trimmedMessage = newMessage.value.trim();
+const sendMessage = (message: string) => {
+  const trimmedMessage = message.trim();
   if (trimmedMessage) {
     send(JSON.stringify({ type: "MESSAGE", content: trimmedMessage }));
-    newMessage.value = "";
   }
 };
 </script>
