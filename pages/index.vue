@@ -1,23 +1,19 @@
-<template>
-  <div id="app" class="d-flex flex-column vh-100">
-    <Navbar />
-
-    <div
-      class="d-flex flex-column flex-grow-1 overflow-auto p-3"
-      style="max-height: calc(100vh - 80px)"
-    >
-      <div ref="chatContainer" class="d-flex flex-column gap-3">
-        <Message
-          v-for="(message, index) in messages"
-          :key="index"
-          :message="message.text"
-          :type="message.type"
-        />
-      </div>
+<template #default>
+  <div
+    class="d-flex flex-column flex-grow-1 overflow-auto p-3"
+    style="max-height: calc(100vh - 80px)"
+  >
+    <div ref="chatContainer" class="d-flex flex-column gap-3">
+      <Message
+        v-for="(message, index) in messages"
+        :key="index"
+        :message="message.text"
+        :type="message.type"
+      />
     </div>
-
-    <InputBox @sendMessage="sendMessage" />
   </div>
+
+  <InputBox @sendMessage="sendMessage" />
 </template>
 
 <script setup lang="ts">
