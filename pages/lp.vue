@@ -1,32 +1,54 @@
-<template>
-  <!-- ホームページメインコンテンツ -->
+<template #default>
   <div
-    class="d-flex flex-column flex-grow-1 align-items-center justify-content-center text-center p-4"
+    class="d-flex flex-column flex-grow-1 overflow-auto p-3"
+    style="max-height: calc(100vh - 80px)"
   >
-    <h1 class="mb-4">Nuxt チャットツールへようこそ</h1>
-    <p class="lead mb-4">
-      このページは、チャットツールアプリケーションにアクセスするための入口です。
-    </p>
-
-    <!-- アプリへのリンクボタン -->
-    <a class="btn btn-primary btn-lg mt-3" v-bind:href="url">{{ name }}</a>
-
-    <h2>愉快な開発者たち</h2>
-    <img src="/yukai.jpg" class="img-fluid w-25 h-25" />
+    <div ref="chatContainer" class="d-flex flex-column gap-3">
+      <Message
+        v-for="(message, index) in messages"
+        :key="index"
+        :message="message.text"
+        :type="message.type"
+      />
+    </div>
   </div>
 
-  <!-- フッター -->
-  <footer class="bg-dark text-white text-center p-3">
-    <p>© 2025 Nuxt チャットツール</p>
-  </footer>
+  <InputBox @sendMessage="sendMessage" />
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+const messages = ref<
+  {
+    text: string;
+    type: "user" | "other";
+  }[]
+>([]);
+const clientId = ref("");
+const { data, send } = useWebSocket("ws://localhost:8080/ws");
 
-// リンク先URLを設定（例: チャットアプリページ）
-const url = ref("/");
+watch(data, (newData) => {
+  const data = JSON.parse(newData);
+  if (data) {
+    if (data["type"] == "CONNECT") {
+      clientId.value = data["id"];
+      messages.value.push({
+        text: "接続が完了し、あなたのIDが割り振られました！",
+        type: "other",
+      });
+    }
+    if (data["type"] == "MESSAGE") {
+      messages.value.push({
+        text: data["content"],
+        type: clientId.value === data["sender"] ? "user" : "other",
+      });
+    }
+  }
+});
 
-// ボタンのテキストを設定
-const name = ref("チャットツールを開始する");
+const sendMessage = (message: string) => {
+  const trimmedMessage = message.trim();
+  if (trimmedMessage) {
+    send(JSON.stringify({ type: "MESSAGE", content: trimmedMessage }));
+  }
+};
 </script>
