@@ -14,9 +14,4 @@
     <h2>愉快な開発者たち</h2>
     <img src="/yukai.jpg" class="img-fluid w-25 h-25" />
   </div>
-
-  <!-- フッター -->
-  <footer class="bg-dark text-white text-center p-3">
-    <p>© 2025 Nuxt チャットツール</p>
-  </footer>
 </template>
