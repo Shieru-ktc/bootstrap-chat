@@ -1,46 +1,47 @@
 <template>
-  <b-div id="app" flex flex-direction="column" viewport-height>
+  <div id="app" class="d-flex flex-column vh-100">
     <Navbar expand="lg" background-color="primary" theme="dark">
       <Container type="fluid">
         <NavbarBrand>Nuxt チャットツール</NavbarBrand>
       </Container>
     </Navbar>
-    <b-div margin="x-2" flex flex-direction="column" flex-grow="1">
-      <b-div
-        ref="chatContainer"
-        flex
-        gap="10"
-        flex-direction="column"
-        flex-grow="1"
-        style="overflow-y: auto"
-      >
-        <b-div
+
+    <!-- メッセージ表示エリア -->
+    <div
+      class="d-flex flex-column flex-grow-1 overflow-auto p-3"
+      style="max-height: calc(100vh - 80px)"
+    >
+      <div ref="chatContainer" class="d-flex flex-column gap-3">
+        <div
           v-for="(message, index) in messages"
           :key="index"
-          :class="['chat-bubble', message.type]"
-          rounded
-          margin="y-2"
-          padding="2"
+          :class="[
+            'chat-bubble',
+            message.type === 'user'
+              ? 'align-self-end bg-success text-white rounded p-2'
+              : 'align-self-start bg-light text-dark rounded p-2',
+          ]"
         >
           {{ message.text }}
-        </b-div>
-      </b-div>
-      <b-div flex gap="2" relative-width="100" margin="2">
-        <BFormInput
-          flex
-          type="text"
-          v-model="newMessage"
-          placeholder="メッセージを入力..."
-          @keydown.enter="sendMessage"
-        />
-        <b-button @click="sendMessage" color="white">✈️</b-button>
-      </b-div>
-    </b-div>
-  </b-div>
+        </div>
+      </div>
+    </div>
+
+    <!-- メッセージ入力欄 -->
+    <div class="d-flex p-3">
+      <BFormInput
+        class="flex-grow-1"
+        type="text"
+        v-model="newMessage"
+        placeholder="メッセージを入力..."
+        @keydown.enter="sendMessage"
+      />
+      <b-button @click="sendMessage" color="white">✈️</b-button>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-// Reactive properties
 const newMessage = ref("");
 const messages = ref<
   {
@@ -51,7 +52,6 @@ const messages = ref<
 const clientId = ref("");
 const { data, send } = useWebSocket("ws://localhost:8080/ws");
 
-// メッセージ受信機能
 watch(data, (newData) => {
   const data = JSON.parse(newData);
   if (data) {
@@ -71,25 +71,11 @@ watch(data, (newData) => {
   }
 });
 
-// メッセージ送信機能
 const sendMessage = () => {
   const trimmedMessage = newMessage.value.trim();
   if (trimmedMessage) {
     send(JSON.stringify({ type: "MESSAGE", content: trimmedMessage }));
-    newMessage.value = ""; // 入力欄をクリア
+    newMessage.value = "";
   }
 };
 </script>
-
-<style scoped>
-.chat-bubble.user {
-  background-color: #ccc;
-  color: black;
-  align-self: flex-end;
-}
-.chat-bubble.other {
-  background-color: #007bff;
-  color: white;
-  align-self: flex-start;
-}
-</style>
