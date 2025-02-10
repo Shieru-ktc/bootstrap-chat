@@ -12,24 +12,11 @@
 </template>
 
 <script setup lang="ts">
-import { defineEmits, defineProps, ref } from "vue";
-
-const props = defineProps({
-  modelValue: {
-    type: String,
-    default: "",
-  },
-});
-
-const emit = defineEmits(["update:modelValue", "sendMessage"]);
-
-const inputMessage = ref(props.modelValue);
+const { sendMessage } = useChat();
+const inputMessage = ref("");
 
 const handleSendMessage = () => {
-  if (inputMessage.value.trim()) {
-    emit("sendMessage", inputMessage.value.trim());
-    emit("update:modelValue", "");
-    inputMessage.value = "";
-  }
+  sendMessage(inputMessage.value);
+  inputMessage.value = "";
 };
 </script>
