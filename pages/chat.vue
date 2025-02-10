@@ -4,7 +4,7 @@
     style="max-height: calc(100vh - 80px)"
   >
     <div ref="chatContainer" class="d-flex flex-column gap-3">
-      <Message
+      <ChatMessage
         v-for="(message, index) in messages"
         :key="index"
         :message="message.text"
@@ -13,7 +13,7 @@
     </div>
   </div>
 
-  <InputBox @sendMessage="sendMessage" />
+  <ChatInput @sendMessage="sendMessage" />
 </template>
 
 <script setup lang="ts">
