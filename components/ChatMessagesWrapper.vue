@@ -1,5 +1,5 @@
 <template>
-  <div ref="chatContainer" class="d-flex flex-column gap-3">
+  <div class="d-flex flex-column gap-3 flex-grow-1 m-3">
     <slot />
   </div>
 </template>
